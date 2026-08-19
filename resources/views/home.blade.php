@@ -14,25 +14,39 @@
 
     <style>
         :root {
-            --navy:    #1e2340;
-            --navy2:   #2a2f52;
-            --cream:   #f2ede6;
-            --sand:    #c9bc9e;
-            --burnt:   #c05c1a;
-            --burnt2:  #d96a22;
-            --slate:   #8a98a8;
-            --white:   #ffffff;
-            --gold:    #e8935a;
-            --font-d:  'Playfair Display', Georgia, serif;
-            --font-b:  'DM Sans', sans-serif;
-        }
+        --navy:      #1E2235;
+        --navy-soft: #2A304A;
+        --cream:     #F5F2ED;
+        --amber:     #C8702A;
+        --amber-lt:  #F0A96A;
+        --amber-pale:#FDF3EB;
+        --text:      #1E2235;
+        --muted:     #7B7F96;
+        --white:     #FFFFFF;
+        --border:    rgba(30,34,53,.10);
+        --shadow-sm: 0 2px 12px rgba(30,34,53,.07);
+        --shadow-md: 0 8px 32px rgba(30,34,53,.13);
+        --r-sm:      8px;
+        --r-md:      14px;
+        --r-lg:      20px;
+        --ff-display:'Playfair Display', Georgia, serif;
+        --ff-body:   'DM Sans', system-ui, sans-serif;
+
+        --navy2:  #2A304A;   
+        --burnt:  #C8702A;   
+        --burnt2: #A85A20;   
+        --gold:   #E0A458;   
+        --slate:  #7B7F96;  
+        --sand:   #E8DCC8;   
+        --font-b: var(--ff-body);   
+        --font-d: var(--ff-display); 
+    }
 
         *, *::before, *::after { box-sizing: border-box; margin:0; padding:0; }
         html { scroll-behavior: smooth; }
         body { font-family: var(--font-b); background: var(--cream); color: var(--navy); overflow-x: hidden; }
         a { text-decoration: none; color: inherit; }
 
-        /* ── PAGE LOADER ── */
         #loader {
             position: fixed; inset: 0; z-index: 9999;
             background: var(--navy);
@@ -48,7 +62,6 @@
             animation: ldFill 1.3s ease forwards; }
         @keyframes ldFill { from{width:0} to{width:100%} }
 
-        /* ── SCROLL TOP ── */
         #scrollTop {
             position: fixed; bottom: 1.8rem; right: 1.8rem; z-index: 800;
             width: 42px; height: 42px; border-radius: 50%; border: none;
@@ -61,46 +74,120 @@
         #scrollTop.show { opacity: 1; transform: translateY(0); }
         #scrollTop:hover { background: var(--burnt); }
 
-        /* ── NAVBAR ── */
-        .bl-nav {
-            position: fixed; top: 0; left: 0; right: 0; z-index: 1030;
+        .bl-navbar {
             background: var(--navy);
-            transition: box-shadow .3s, backdrop-filter .3s;
+            padding: 0 2rem;
+            height: 68px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 1030;
+            box-shadow: 0 2px 20px rgba(0,0,0,.25);
         }
-        .bl-nav.scrolled {
-            box-shadow: 0 4px 30px rgba(0,0,0,.28);
-            backdrop-filter: blur(12px);
-            background: rgba(30,35,64,.95);
+        .bl-logo {
+            font-family: var(--font-d); font-size: 1.45rem;
+            color: var(--white); text-decoration: none;
+            display: flex; align-items: center; gap: .5rem;
+            letter-spacing: -.3px; flex-shrink: 0;
         }
-        .bl-nav .navbar-brand {
-            font-family: var(--font-d); font-size: 1.3rem; font-weight: 700;
-            color: var(--white); display: flex; align-items: center; gap: .5rem;
+        .bl-logo span { color: var(--amber-lt); }
+        .bl-nav-links { display: flex; align-items: center; gap: 2rem; list-style: none; margin: 0; padding: 0; }
+        .bl-nav-links a {
+            color: rgba(255,255,255,.65); text-decoration: none;
+            font-size: .9rem; font-weight: 500; letter-spacing: .3px;
+            padding-bottom: 4px; border-bottom: 2px solid transparent;
+            transition: color .25s, border-color .25s;
         }
-        .bl-nav .nav-link {
-            color: rgba(255,255,255,.7) !important; font-size: .9rem; font-weight: 500;
-            padding: .5rem .85rem !important; position: relative;
-            transition: color .2s;
+        .bl-nav-links a:hover, .bl-nav-links a.active { color: var(--white); border-color: var(--amber-lt); }
+        .bl-nav-right { display: flex; align-items: center; gap: 1rem; flex-shrink: 0; }
+        .bl-avatar {
+            width: 40px; height: 40px; border-radius: 50%;
+            border: 2px solid var(--amber-lt);
+            object-fit: cover; cursor: pointer;
+            transition: transform .2s;
         }
-        .bl-nav .nav-link::after {
-            content: ''; position: absolute; bottom: 1px; left: .85rem; right: .85rem;
-            height: 2px; background: var(--white); border-radius: 2px;
-            transform: scaleX(0); transition: transform .25s;
+        .bl-avatar:hover { transform: scale(1.08); }
+        .bl-notif {
+            position: relative; color: rgba(255,255,255,.75);
+            cursor: pointer; padding: 6px; border-radius: var(--r-sm);
+            transition: background .2s; display: flex; align-items: center;
         }
-        .bl-nav .nav-link:hover, .bl-nav .nav-link.active { color: var(--white) !important; }
-        .bl-nav .nav-link:hover::after, .bl-nav .nav-link.active::after { transform: scaleX(1); }
+        .bl-notif:hover { background: rgba(255,255,255,.1); }
+        .bl-notif-dot {
+            position: absolute; top: 5px; right: 5px;
+            width: 8px; height: 8px;
+            background: var(--amber-lt); border-radius: 50%;
+            border: 2px solid var(--navy);
+            animation: pulse-dot 2s infinite;
+        }
+        @keyframes pulse-dot {
+            0%,100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.4); opacity: .7; }
+        }
         .btn-si {
-            background: rgba(255,255,255,.12); border: 1.5px solid rgba(255,255,255,.3);
-            color: var(--white) !important; border-radius: 50px;
-            padding: .38rem 1.25rem !important; font-weight: 600; font-size: .9rem;
-            transition: background .2s, transform .2s;
+            background: var(--amber); color: var(--white) !important; border-radius: 50px;
+            padding: .5rem 1.4rem !important; font-weight: 700; font-size: .85rem;
+            transition: background .2s, transform .2s; text-decoration: none;
         }
-        .btn-si:hover { background: rgba(255,255,255,.22); transform: translateY(-1px); }
-        .navbar-toggler { border: 1.5px solid rgba(255,255,255,.3) !important; padding: .3rem .55rem; }
-        .navbar-toggler-icon {
-            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255,255,255,.8%29' stroke-linecap='round' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e") !important;
+        .btn-si:hover { background: #b5631f; transform: translateY(-1px); color: var(--white) !important; }
+
+        .bl-nav-toggle {
+            display: none;
+            background: none; border: none;
+            width: 40px; height: 40px;
+            align-items: center; justify-content: center;
+            cursor: pointer; border-radius: var(--r-sm);
+            transition: background .2s; flex-shrink: 0;
+        }
+        .bl-nav-toggle:hover { background: rgba(255,255,255,.1); }
+        .bl-nav-toggle span {
+            display: block; width: 20px; height: 2px; background: var(--white);
+            position: relative; transition: background .2s;
+        }
+        .bl-nav-toggle span::before, .bl-nav-toggle span::after {
+            content: ''; position: absolute; left: 0; width: 20px; height: 2px;
+            background: var(--white); transition: transform .25s, top .25s, opacity .25s;
+        }
+        .bl-nav-toggle span::before { top: -6px; }
+        .bl-nav-toggle span::after  { top: 6px; }
+        .bl-nav-toggle.open span { background: transparent; }
+        .bl-nav-toggle.open span::before { top: 0; transform: rotate(45deg); }
+        .bl-nav-toggle.open span::after  { top: 0; transform: rotate(-45deg); }
+
+        @media (max-width: 768px) {
+            .bl-navbar { padding: 0 1.25rem; }
+            .bl-nav-toggle { display: flex; }
+            .bl-nav-links {
+                position: fixed;
+                top: 68px; left: 0; right: 0;
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0;
+                background: var(--navy);
+                max-height: 0;
+                overflow: hidden;
+                opacity: 0;
+                padding: 0 1.25rem;
+                box-shadow: 0 12px 24px rgba(0,0,0,.28);
+                transition: max-height .3s ease, opacity .25s ease, padding .3s ease;
+            }
+            .bl-nav-links.open {
+                max-height: 320px;
+                opacity: 1;
+                padding: .5rem 1.25rem 1.25rem;
+            }
+            .bl-nav-links li { width: 100%; }
+            .bl-nav-links a {
+                display: block; padding: .85rem 0; width: 100%;
+                border-bottom: 1px solid rgba(255,255,255,.08);
+            }
+            .bl-nav-links li:last-child a { border-bottom: none; }
+            .bl-nav-right { gap: .5rem; }
+            .bl-notif { display: none; }
         }
 
-        /* ── HERO ── */
         .hero {
             min-height: 100vh; padding-top: 68px;
             background: var(--cream);
@@ -108,7 +195,6 @@
             display: flex; align-items: center;
         }
 
-        /* Sand blobs — faithfully matching the design */
         .blob { position: absolute; background: var(--sand); pointer-events: none; z-index: 0; }
         .blob-tr {
             width: 480px; height: 420px;
@@ -126,7 +212,6 @@
         @keyframes bMorph  { 0%{border-radius:40% 60% 65% 35%/45% 50% 55% 50%} 100%{border-radius:60% 40% 45% 55%/35% 60% 40% 65%} }
         @keyframes bMorph2 { 0%{border-radius:60% 40% 30% 70%/50% 65% 35% 50%} 100%{border-radius:40% 60% 60% 40%/60% 40% 60% 40%} }
 
-        /* particles */
         #ptcl { position: absolute; inset: 0; pointer-events: none; z-index: 0; }
 
         .hero-inner { position: relative; z-index: 1; }
@@ -179,7 +264,6 @@
         }
         @keyframes bookFloat { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-16px)} }
 
-        /* ── HOW TO DO ── */
         .how-section { background: var(--cream); }
 
         .section-eyebrow {
@@ -195,10 +279,8 @@
         .section-h { font-family: var(--font-d); font-size: clamp(1.75rem, 3vw, 2.5rem); font-weight: 900; color: var(--navy); line-height: 1.15; }
         .section-sub { font-size: .95rem; color: var(--slate); }
 
-        /* Steps timeline */
         .steps-row { position: relative; }
 
-        /* connecting line between circles */
         .steps-row::before {
             content: '';
             position: absolute;
@@ -224,7 +306,6 @@
         .sc-3 { background: var(--sand); color: var(--navy); }
         .sc-4 { background: var(--navy); color: var(--white); }
 
-        /* pulse ring on active step */
         .step-circle.active-step::after {
             content: '';
             position: absolute; inset: -6px;
@@ -239,7 +320,6 @@
         .step-title { font-family: var(--font-d); font-size: 1.05rem; font-weight: 700; color: var(--navy); margin-bottom: .4rem; }
         .step-desc { font-size: .86rem; color: var(--slate); line-height: 1.6; max-width: 160px; margin: 0 auto; }
 
-        /* ── POPULAR BOOKS ── */
         .books-section { background: var(--navy2); }
 
         .books-section .section-eyebrow::before { background: var(--gold); }
@@ -271,7 +351,7 @@
         .book-cover-wrap img {
             width: 100%; height: 100%; object-fit: cover; display: block;
         }
-        /* placeholder if no img */
+      
         .book-placeholder {
             width: 100%; height: 100%;
             display: flex; align-items: center; justify-content: center;
@@ -286,7 +366,7 @@
         .book-author { font-size: .8rem; color: var(--slate); margin-bottom: .3rem; }
         .stars { color: #f4c542; font-size: .82rem; letter-spacing: .04em; }
 
-        /* ── REVIEWS ── */
+        
         .reviews-section { background: var(--cream); }
 
         .rating-big {
@@ -345,7 +425,6 @@
             pointer-events: none; user-select: none;
         }
 
-        /* ── CTA BANNER ── */
         .cta-section { background: var(--navy); position: relative; overflow: hidden; }
         .cta-section::before {
             content: ''; position: absolute;
@@ -387,14 +466,12 @@
         }
         @keyframes ringPulse { 0%{transform:scale(1);opacity:1} 100%{transform:scale(1.18);opacity:0} }
 
-        /* ── FOOTER ── */
         .bl-footer { background: var(--navy); border-top: 1px solid rgba(255,255,255,.07); }
         .footer-brand { font-family: var(--font-d); font-size: 1.2rem; font-weight: 700; color: var(--white); }
         .footer-link { font-size: .85rem; color: rgba(255,255,255,.45); transition: color .2s; }
         .footer-link:hover { color: rgba(255,255,255,.85); }
         .footer-copy { font-size: .8rem; color: rgba(255,255,255,.3); }
 
-        /* ── RESPONSIVE ── */
         @media (max-width: 991px) {
             .steps-row::before { display: none; }
             .step-desc { max-width: 100%; }
@@ -423,45 +500,48 @@
     <i class="bi bi-arrow-up"></i>
 </button>
 
-{{-- ════════════════════════════
-     NAVBAR (Sudah Dirapikan Sebelum Login)
-════════════════════════════ --}}
-<nav class="bl-nav navbar navbar-expand-lg">
-    <div class="container">
-        <a class="navbar-brand" href="{{ route('home') }}">
-            <svg width="32" height="32" viewBox="0 0 36 36" fill="none" aria-hidden="true">
-                <rect x="6"  y="10" width="24" height="18" rx="3" fill="#4a6fa5" opacity=".3"/>
-                <rect x="8"  y="8"  width="20" height="18" rx="3" fill="#e8c07d"/>
-                <rect x="10" y="8"  width="16" height="18" rx="2" fill="#f5dfa0"/>
-                <line x1="13" y1="13"   x2="23" y2="13"   stroke="#c05c1a" stroke-width="1.5" stroke-linecap="round"/>
-                <line x1="13" y1="16.5" x2="23" y2="16.5" stroke="#c05c1a" stroke-width="1.5" stroke-linecap="round"/>
-                <line x1="13" y1="20"   x2="19" y2="20"   stroke="#c05c1a" stroke-width="1.5" stroke-linecap="round"/>
-                <circle cx="26" cy="7"  r="1.5" fill="#f4d03f"/>
-                <circle cx="30" cy="10" r="1"   fill="#e74c3c"/>
-                <circle cx="28" cy="4"  r="1"   fill="#2ecc71"/>
-            </svg>
-            BookLoop
-        </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navmenu">
-            <span class="navbar-toggler-icon"></span>
+{{-- NAVBAR --}}
+<nav class="bl-navbar">
+    <a href="{{ route('home') }}" class="bl-logo">Book<span>Loop</span></a>
+
+    <ul class="bl-nav-links" id="blNavLinks">
+        <li><a href="{{ route('home') }}" class="{{ request()->routeIs('home') ? 'active' : '' }}">Home</a></li>
+        <li><a href="{{ route('catalog.index') }}" class="{{ request()->routeIs('catalog.*') ? 'active' : '' }}">Catalog</a></li>
+        <li><a href="{{ route('history.index') }}" class="{{ request()->routeIs('history.*') ? 'active' : '' }}">History</a></li>
+    </ul>
+
+    <div class="bl-nav-right">
+        @auth
+            <div class="bl-notif" title="Notifications">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+                    <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+                </svg>
+                <div class="bl-notif-dot"></div>
+            </div>
+            <div class="dropdown">
+                <img src="https://ui-avatars.com/api/?name={{ urlencode(auth()->user()->NamaLengkap ?? auth()->user()->name ?? 'User') }}&background=C8702A&color=fff"
+                     alt="Avatar" class="bl-avatar"
+                     data-bs-toggle="dropdown" aria-expanded="false" id="userMenu">
+                <ul class="dropdown-menu dropdown-menu-end shadow-sm" aria-labelledby="userMenu"
+                    style="border-radius:var(--r-md);border:1px solid var(--border);font-family:var(--ff-body);min-width:180px;padding:.5rem;">
+                    <li><span class="dropdown-item-text small fw-bold text-muted">👋 {{ auth()->user()->NamaLengkap ?? auth()->user()->name }}</span></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item rounded-2 py-2" href="{{ route('profile.show') }}">👤 &nbsp;My Profile</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item rounded-2 py-2 text-danger" href="{{ url('/logout') }}">🚪 &nbsp;Logout</a></li>
+                </ul>
+            </div>
+        @else
+            <a href="{{ route('login') }}" class="btn-si">Sign In</a>
+        @endauth
+        <button class="bl-nav-toggle" id="blNavToggle" type="button" aria-label="Toggle menu" aria-expanded="false">
+            <span></span>
         </button>
-        <div class="collapse navbar-collapse" id="navmenu">
-            <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-1">
-            <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-1">
-    <li class="nav-item"><a class="nav-link active" href="{{ route('home') }}">home</a></li>
-    <li class="nav-item"><a class="nav-link" href="{{ route('catalog.index') }}">catalog</a></li>
-    <li class="nav-item"><a class="nav-link" href="{{ route('history.index') }}">history</a></li>
-    <li class="nav-item ms-lg-2 mt-2 mt-lg-0">
-        <a class="nav-link btn-si" href="{{ route('login') }}">sign in</a>
-    </li>
-</ul>
-        </div>
     </div>
 </nav>
 
-{{-- ════════════════════════════
-     HERO
-════════════════════════════ --}}
+{{--  HERO --}}
 <section class="hero">
     <div class="blob blob-tr"></div>
     <div class="blob blob-br"></div>
@@ -475,7 +555,6 @@
                     Borrow your<br>favorite books,
                     <span class="accent">anytime, anywhere</span>
                 </h1>
-                <p class="hero-desc mb-4">
                     Access a selection of thousands of books.
                     Borrow, read, and return them — all from your
                     screen, no waiting in line.
@@ -798,23 +877,30 @@
 <script>
 document.addEventListener('DOMContentLoaded', function () {
 
-    /* 1 — Page loader */
     const loader = document.getElementById('loader');
     setTimeout(() => loader.classList.add('out'), 1350);
 
-    /* 2 — AOS */
     AOS.init({ duration: 700, easing: 'ease-out-cubic', once: true, offset: 55 });
 
-    /* 3 — Navbar scroll */
-    const nav = document.querySelector('.bl-nav');
-    window.addEventListener('scroll', () => nav.classList.toggle('scrolled', scrollY > 40));
+    const navToggle = document.getElementById('blNavToggle');
+    const navLinks  = document.getElementById('blNavLinks');
+    if (navToggle && navLinks) {
+        navToggle.addEventListener('click', () => {
+            const isOpen = navLinks.classList.toggle('open');
+            navToggle.classList.toggle('open', isOpen);
+            navToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+        });
+        navLinks.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+            navLinks.classList.remove('open');
+            navToggle.classList.remove('open');
+            navToggle.setAttribute('aria-expanded', 'false');
+        }));
+    }
 
-    /* 4 — Scroll top btn */
     const stBtn = document.getElementById('scrollTop');
     window.addEventListener('scroll', () => stBtn.classList.toggle('show', scrollY > 300));
     stBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
 
-    /* 5 — Floating particles (hero) */
     const ptcl = document.getElementById('ptcl');
     const pColors = ['#e8935a','#a78ecf','#6bbfbf','#f5b8c4','#7a9ccf','#e8c07d','#b87090'];
     for (let i = 0; i < 16; i++) {
@@ -833,7 +919,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
         ptcl.appendChild(d);
     }
-    // inject keyframe if not already present
+    
     if (!document.getElementById('floatKf')) {
         const s = document.createElement('style');
         s.id = 'floatKf';
@@ -848,7 +934,6 @@ document.addEventListener('DOMContentLoaded', function () {
         document.head.appendChild(s);
     }
 
-    /* 6 — Rating counter animation */
     let rated = false;
     const ratingEl = document.getElementById('ratingCount');
     const ratingObs = new IntersectionObserver(entries => {
@@ -865,7 +950,6 @@ document.addEventListener('DOMContentLoaded', function () {
     }, { threshold: .5 });
     if (ratingEl) ratingObs.observe(ratingEl);
 
-    /* 7 — Rating bar animation on scroll */
     const barObs = new IntersectionObserver(entries => {
         entries.forEach(e => {
             if (e.isIntersecting) {
@@ -878,7 +962,6 @@ document.addEventListener('DOMContentLoaded', function () {
         barObs.observe(b);
     });
 
-    /* 8 — Step circles: scroll-activate pulse */
     const stepCircles = document.querySelectorAll('.step-circle');
     const stepObs = new IntersectionObserver(entries => {
         entries.forEach(e => {

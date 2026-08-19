@@ -1,0 +1,48 @@
+
+services:
+  # Container Aplikasi/Web
+  app:
+    build: .
+    container_name: perpus-app
+    restart: always
+    working_dir: /var/www
+    volumes:
+      - .:/var/www
+    networks:
+      - perpus-network
+
+  # Container Web Server (Nginx)
+  webserver:
+    image: nginx:alpine
+    container_name: perpus-webserver
+    restart: always
+    ports:
+      - "8000:80"
+    volumes:
+      - .:/var/www
+      - ./docker-compose/nginx:/etc/nginx/conf.d/
+    networks:
+      - perpus-network
+
+  # Container Database (MySQL)
+  db:
+    image: mysql:8.0
+    container_name: perpus-db
+    restart: always
+    environment:
+      MYSQL_DATABASE: db_perpus
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "3306:3306"
+    volumes:
+      - dbdata:/var/lib/mysql
+    networks:
+      - perpus-network
+
+networks:
+  perpus-network:
+    driver: bridge
+
+volumes:
+  dbdata:
+    driver: local

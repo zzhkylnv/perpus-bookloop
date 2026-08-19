@@ -8,7 +8,6 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-    /* ===== TOKENS ===== */
     :root {
         --navy:      #1E2235;
         --navy-soft: #2A304A;
@@ -45,9 +44,9 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
-        position: sticky;
-        top: 0;
-        z-index: 1000;
+        position: fixed;
+        top: 0; left: 0; right: 0;
+        z-index: 1030;
         box-shadow: 0 2px 20px rgba(0,0,0,.25);
     }
     .bl-logo {
@@ -95,6 +94,31 @@
         50% { transform: scale(1.4); opacity: .7; }
     }
 
+    /* ===== NAVBAR: MOBILE TOGGLE ===== */
+    .bl-nav-toggle {
+        display: none;
+        background: none; border: none;
+        width: 40px; height: 40px;
+        align-items: center; justify-content: center;
+        cursor: pointer; border-radius: var(--r-sm);
+        transition: background .2s;
+        flex-shrink: 0;
+    }
+    .bl-nav-toggle:hover { background: rgba(255,255,255,.1); }
+    .bl-nav-toggle span {
+        display: block; width: 20px; height: 2px; background: var(--white);
+        position: relative; transition: background .2s;
+    }
+    .bl-nav-toggle span::before, .bl-nav-toggle span::after {
+        content: ''; position: absolute; left: 0; width: 20px; height: 2px;
+        background: var(--white); transition: transform .25s, top .25s, opacity .25s;
+    }
+    .bl-nav-toggle span::before { top: -6px; }
+    .bl-nav-toggle span::after  { top: 6px; }
+    .bl-nav-toggle.open span { background: transparent; }
+    .bl-nav-toggle.open span::before { top: 0; transform: rotate(45deg); }
+    .bl-nav-toggle.open span::after  { top: 0; transform: rotate(-45deg); }
+
     /* ===== PAGE HEADER ===== */
     .bl-page-header {
         padding: 2.8rem 2rem 2rem;
@@ -117,7 +141,6 @@
         to   { opacity: 1; transform: translateY(0); }
     }
 
-    /* ===== SEARCH & FILTER BAR ===== */
     .bl-filter-bar {
         max-width: 1200px;
         margin: 0 auto 2rem;
@@ -191,7 +214,6 @@
     }
     .bl-result-count strong { color: var(--amber); }
 
-    /* ===== GENRE TABS ===== */
     .bl-genre-tabs {
         max-width: 1200px;
         margin: 0 auto 1.75rem;
@@ -222,7 +244,6 @@
         box-shadow: 0 4px 14px rgba(200,112,42,.3);
     }
 
-    /* ===== BOOK GRID ===== */
     .bl-catalog-wrap {
         max-width: 1200px;
         margin: 0 auto;
@@ -234,7 +255,6 @@
         gap: 1.5rem;
     }
 
-    /* ===== BOOK CARD ===== */
     .bl-card {
         background: var(--white);
         border-radius: var(--r-lg);
@@ -473,7 +493,6 @@
     }
     .bl-modal-close:hover { background: rgba(200,112,42,.12); color: var(--amber); }
 
-    /* ===== TOAST ===== */
     .bl-toast {
         position: fixed; bottom: 1.75rem; right: 1.75rem;
         background: var(--navy); color: var(--white);
@@ -500,7 +519,6 @@
         100% { background-position: -200% 0; }
     }
 
-    /* ===== MOBILE ===== */
     .bl-fab {
         display: none;
         position: fixed; bottom: 1.5rem; right: 1.5rem;
@@ -515,7 +533,37 @@
     .bl-fab:hover { transform: scale(1.1); }
     @media (max-width: 768px) {
         .bl-fab { display: flex; }
-        .bl-nav-links { display: none; }
+        .bl-navbar { padding: 0 1.25rem; }
+        .bl-nav-toggle { display: flex; }
+        .bl-nav-links {
+            position: fixed;
+            top: 68px; left: 0; right: 0;
+            flex-direction: column;
+            align-items: stretch;
+            gap: 0;
+            background: var(--navy);
+            max-height: 0;
+            overflow: hidden;
+            opacity: 0;
+            padding: 0 1.25rem;
+            box-shadow: 0 12px 24px rgba(0,0,0,.28);
+            transition: max-height .3s ease, opacity .25s ease, padding .3s ease;
+        }
+        .bl-nav-links.open {
+            max-height: 320px;
+            opacity: 1;
+            padding: .5rem 1.25rem 1.25rem;
+        }
+        .bl-nav-links li { width: 100%; }
+        .bl-nav-links a {
+            display: block;
+            padding: .85rem 0;
+            width: 100%;
+            border-bottom: 1px solid rgba(255,255,255,.08);
+        }
+        .bl-nav-links li:last-child a { border-bottom: none; }
+        .bl-nav-right { gap: .5rem; }
+        .bl-notif { display: none; }
         .bl-page-header { padding: 1.75rem 1rem 1.25rem; }
         .bl-filter-bar { padding: 0 1rem; }
         .bl-genre-tabs { padding: 0 1rem; }
@@ -529,18 +577,12 @@
 
 @section('content')
 
-{{-- 🛠️ BARU BUNG: LOGIKA SATPAM NAVBAR DINAMIS TERINTEGRASI --}}
 <nav class="bl-navbar">
     <a href="{{ route('home') }}" class="bl-logo">
-        <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
-            <rect x="3" y="6" width="16" height="20" rx="3" fill="#C8702A" opacity=".9"/>
-            <rect x="7" y="3" width="16" height="20" rx="3" fill="rgba(255,255,255,.2)" stroke="rgba(255,255,255,.4)" stroke-width="1"/>
-            <path d="M11 9h8M11 13h8M11 17h5" stroke="rgba(255,255,255,.8)" stroke-width="1.4" stroke-linecap="round"/>
-        </svg>
-        Book<span>Loop</span>
+        Book<span style="color:var(--amber-lt)">Loop</span>
     </a>
-    
-    <ul class="bl-nav-links">
+
+    <ul class="bl-nav-links" id="blNavLinks">
         {{-- Jika sudah login, tombol Home ngarah ke dashboard biar ga mental keluar --}}
         <li><a href="{{ auth()->check() ? url('/dashboard') : route('home') }}">Home</a></li>
         <li><a href="{{ route('catalog.index') }}" class="active">Catalog</a></li>
@@ -549,7 +591,6 @@
 
     <div class="bl-nav-right">
         @auth
-            {{-- Kalau user SUDAH login, nampilin Avatar Akun Asli --}}
             <div class="bl-notif" title="Notifications">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
@@ -557,21 +598,25 @@
                 </svg>
                 <div class="bl-notif-dot"></div>
             </div>
-            <img src="https://ui-avatars.com/api/?name={{ urlencode(auth()->user()->NamaLengkap) }}&background=C8702A&color=fff"
-                 alt="Avatar" class="bl-avatar"
-                 data-bs-toggle="dropdown" aria-expanded="false" id="userMenu">
-            <ul class="dropdown-menu dropdown-menu-end shadow-sm" aria-labelledby="userMenu"
-                style="border-radius:var(--r-md);border:1px solid var(--border);font-family:var(--ff-body);min-width:180px;padding:.5rem;">
-                <li><span class="dropdown-item-text small fw-bold text-muted">👋 {{ auth()->user()->NamaLengkap }}</span></li>
-                <li><hr class="dropdown-divider"></li>
-                <li><a class="dropdown-item rounded-2 py-2" href="{{ route('profile.show') }}">👤 &nbsp;My Profile</a></li>
-                <li><hr class="dropdown-divider"></li>
-                <li><a class="dropdown-item rounded-2 py-2 text-danger" href="{{ url('/logout') }}">🚪 &nbsp;Logout</a></li>
-            </ul>
+            <div class="dropdown">
+                <img src="https://ui-avatars.com/api/?name={{ urlencode(auth()->user()->NamaLengkap) }}&background=C8702A&color=fff"
+                     alt="Avatar" class="bl-avatar"
+                     data-bs-toggle="dropdown" aria-expanded="false" id="userMenu">
+                <ul class="dropdown-menu dropdown-menu-end shadow-sm" aria-labelledby="userMenu"
+                    style="border-radius:var(--r-md);border:1px solid var(--border);font-family:var(--ff-body);min-width:180px;padding:.5rem;">
+                    <li><span class="dropdown-item-text small fw-bold text-muted">👋 {{ auth()->user()->NamaLengkap }}</span></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item rounded-2 py-2" href="{{ route('profile.show') }}">👤 &nbsp;My Profile</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item rounded-2 py-2 text-danger" href="{{ url('/logout') }}">🚪 &nbsp;Logout</a></li>
+                </ul>
+            </div>
         @else
-            {{-- Kalau BELUM login, nampilin Tombol Sign In Bersih --}}
             <a href="{{ route('login') }}" class="btn fw-bold px-4 py-2" style="background: var(--amber); color: #fff; border-radius: 50px; font-size: 0.85rem; text-decoration: none;">Sign In</a>
         @endauth
+        <button class="bl-nav-toggle" id="blNavToggle" type="button" aria-label="Toggle menu" aria-expanded="false">
+            <span></span>
+        </button>
     </div>
 </nav>
 
@@ -611,7 +656,6 @@
 <div class="bl-catalog-wrap">
     <div class="bl-book-grid" id="bookGrid">
 
-        {{-- 📚 BARU BUNG: LOOPING DATA ASLI DATABASE SINKRON AMAN --}}
         @forelse($books ?? [] as $i => $b)
             @php
                 // Logika pembuat bintang dummy agar visualnya tetap bling-bling memukau
@@ -739,11 +783,27 @@
 
 @push('scripts')
 <script>
-/* ===== DATA ===== */
+(function () {
+    const toggle = document.getElementById('blNavToggle');
+    const links  = document.getElementById('blNavLinks');
+    if (!toggle || !links) return;
+    toggle.addEventListener('click', function () {
+        const isOpen = links.classList.toggle('open');
+        toggle.classList.toggle('open', isOpen);
+        toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    });
+    links.querySelectorAll('a').forEach(function (a) {
+        a.addEventListener('click', function () {
+            links.classList.remove('open');
+            toggle.classList.remove('open');
+            toggle.setAttribute('aria-expanded', 'false');
+        });
+    });
+})();
+
 const wishlist = new Set(JSON.parse(localStorage.getItem('bl_wishlist') || '[]'));
 let currentModalId = null;
 
-/* ===== CARD OBSERVER (reveal on scroll) ===== */
 const cardObserver = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
         if (entry.isIntersecting) {
@@ -760,13 +820,11 @@ function observeCards() {
 }
 observeCards();
 
-/* ===== COUNT ===== */
 function updateCount() {
     const visible = document.querySelectorAll('.bl-card:not([style*="display: none"])').length;
     document.getElementById('countNum').textContent = visible;
 }
 
-/* ===== INIT WISHLIST STATE ===== */
 function initWishlistIcons() {
     wishlist.forEach(id => {
         const icon = document.getElementById('heart-icon-' + id);
@@ -777,7 +835,6 @@ function initWishlistIcons() {
 initWishlistIcons();
 updateCount();
 
-/* ===== SEARCH ===== */
 const searchInput = document.getElementById('searchInput');
 const searchClear = document.getElementById('searchClear');
 
@@ -793,7 +850,6 @@ searchClear.addEventListener('click', () => {
     searchInput.focus();
 });
 
-/* ===== GENRE TABS ===== */
 document.getElementById('genreTabs').addEventListener('click', e => {
     const tab = e.target.closest('.bl-tab');
     if (!tab) return;
@@ -802,10 +858,8 @@ document.getElementById('genreTabs').addEventListener('click', e => {
     filterBooks();
 });
 
-/* ===== SORT ===== */
 document.getElementById('sortSelect').addEventListener('change', () => sortBooks());
 
-/* ===== FILTER ===== */
 function filterBooks() {
     const q     = searchInput.value.trim().toLowerCase();
     const genre = document.querySelector('.bl-tab.active')?.dataset.genre || 'all';
@@ -840,7 +894,6 @@ function filterBooks() {
     updateCount();
 }
 
-/* ===== SORT ===== */
 function sortBooks() {
     const sort  = document.getElementById('sortSelect').value;
     const grid  = document.getElementById('bookGrid');
@@ -860,7 +913,6 @@ function sortBooks() {
     });
 }
 
-/* ===== WISHLIST ===== */
 function toggleWishlist(id, title, btn) {
     const icon = document.getElementById('heart-icon-' + id);
     if (wishlist.has(id)) {
@@ -881,9 +933,7 @@ function toggleWishlist(id, title, btn) {
     if (currentModalId === id) updateModalWishBtn();
 }
 
-/* ===== BORROW COUPLER ===== */
 function quickBorrow(id, title) {
-    // 🛠️ Mencegat otomatis proses pinjam jika belum login!
     @if(!auth()->check())
         showToast('⚠️', 'Kamu harus login dahulu Bung untuk meminjam buku!');
         setTimeout(() => { window.location.href = "{{ route('login') }}"; }, 1500);
@@ -893,7 +943,6 @@ function quickBorrow(id, title) {
     showToast('📚', 'Mengajukan pinjaman untuk "' + title + '"...');
 }
 
-/* ===== MODAL ===== */
 function openModal(card) {
     const raw  = card.querySelector('.bl-data');
     if (!raw) return;
@@ -946,7 +995,6 @@ function closeModal(e) {
 }
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 
-/* ===== LOAD MORE ===== */
 function loadMore() {
     const btn = document.getElementById('loadMoreBtn');
     btn.textContent = 'Memuat...';
@@ -959,7 +1007,6 @@ function loadMore() {
     }, 1200);
 }
 
-/* ===== TOAST ===== */
 let toastTimer;
 function showToast(icon, msg) {
     document.getElementById('toastIcon').textContent = icon;

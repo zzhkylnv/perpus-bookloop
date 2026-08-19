@@ -13,7 +13,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 
     <style>
-        /* ─── CSS Variables Murni Dari Template Pilihanmu ─── */
         :root {
             --navy:    #1a1f35;
             --cream:   #f5f0e8;
@@ -36,49 +35,134 @@
             overflow-x: hidden;
         }
 
-        /* ─── Navbar ─── */
-        .navbar-bookloop {
+        .bl-navbar {
             background: var(--navy);
-            padding: 14px 32px;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            box-shadow: 0 2px 20px rgba(0,0,0,.3);
-        }
-        .navbar-bookloop .brand {
-            font-family: 'Playfair Display', serif;
-            color: #fff;
-            font-size: 1.4rem;
-            font-weight: 700;
-            text-decoration: none;
+            padding: 0 2rem;
+            height: 68px;
             display: flex;
             align-items: center;
-            gap: 10px;
+            justify-content: space-between;
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 1030;
+            box-shadow: 0 2px 20px rgba(0,0,0,.25);
         }
-        .nav-links a {
-            color: rgba(255,255,255,.75);
+        .bl-logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.45rem;
+            color: #fff;
             text-decoration: none;
-            font-size: .95rem;
-            font-weight: 500;
-            padding: 6px 14px;
-            border-radius: 6px;
-            transition: all .2s;
+            display: flex; align-items: center; gap: .5rem;
+            letter-spacing: -.3px; flex-shrink: 0;
         }
-        .nav-links a:hover { color: #fff; background: rgba(255,255,255,.1); }
-        .nav-links a.active { color: #fff; border-bottom: 2px solid #fff; border-radius: 0; }
-        .avatar-wrap img { width: 42px; height: 42px; border-radius: 50%; border: 2px solid rgba(255,255,255,.4); object-fit: cover; }
+        .bl-logo span { color: #F0A96A; }
+        .bl-nav-links { display: flex; align-items: center; gap: 2rem; list-style: none; margin: 0; padding: 0; }
+        .bl-nav-links a {
+            color: rgba(255,255,255,.65);
+            text-decoration: none;
+            font-size: .9rem; font-weight: 500; letter-spacing: .3px;
+            padding-bottom: 4px; border-bottom: 2px solid transparent;
+            transition: color .25s, border-color .25s;
+        }
+        .bl-nav-links a:hover, .bl-nav-links a.active { color: #fff; border-color: #F0A96A; }
+        .bl-nav-right { display: flex; align-items: center; gap: 1rem; flex-shrink: 0; }
+        .bl-avatar {
+            width: 40px; height: 40px; border-radius: 50%;
+            border: 2px solid #F0A96A;
+            object-fit: cover; cursor: pointer;
+            transition: transform .2s;
+        }
+        .bl-avatar:hover { transform: scale(1.08); }
+        .bl-notif {
+            position: relative; color: rgba(255,255,255,.75);
+            cursor: pointer; padding: 6px; border-radius: 8px;
+            transition: background .2s; display: flex; align-items: center;
+        }
+        .bl-notif:hover { background: rgba(255,255,255,.1); }
+        .bl-notif-dot {
+            position: absolute; top: 5px; right: 5px;
+            width: 8px; height: 8px;
+            background: #F0A96A; border-radius: 50%;
+            border: 2px solid var(--navy);
+            animation: bl-pulse-dot 2s infinite;
+        }
+        @keyframes bl-pulse-dot {
+            0%,100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.4); opacity: .7; }
+        }
+        .bl-signin-btn {
+            background: #C8702A; color: #fff !important; border-radius: 50px;
+            padding: .5rem 1.4rem; font-weight: 700; font-size: .85rem;
+            text-decoration: none; transition: background .2s, transform .2s;
+            display: inline-block;
+        }
+        .bl-signin-btn:hover { background: #b5631f; transform: translateY(-1px); color: #fff !important; }
 
-        /* ─── Page Header ─── */
+        .bl-nav-toggle {
+            display: none;
+            background: none; border: none;
+            width: 40px; height: 40px;
+            align-items: center; justify-content: center;
+            cursor: pointer; border-radius: 8px;
+            transition: background .2s; flex-shrink: 0;
+        }
+        .bl-nav-toggle:hover { background: rgba(255,255,255,.1); }
+        .bl-nav-toggle span {
+            display: block; width: 20px; height: 2px; background: #fff;
+            position: relative; transition: background .2s;
+        }
+        .bl-nav-toggle span::before, .bl-nav-toggle span::after {
+            content: ''; position: absolute; left: 0; width: 20px; height: 2px;
+            background: #fff; transition: transform .25s, top .25s, opacity .25s;
+        }
+        .bl-nav-toggle span::before { top: -6px; }
+        .bl-nav-toggle span::after  { top: 6px; }
+        .bl-nav-toggle.open span { background: transparent; }
+        .bl-nav-toggle.open span::before { top: 0; transform: rotate(45deg); }
+        .bl-nav-toggle.open span::after  { top: 0; transform: rotate(-45deg); }
+
+        .bl-page-offset { padding-top: 68px; }
+
+        @media (max-width: 768px) {
+            .bl-navbar { padding: 0 1.25rem; }
+            .bl-nav-toggle { display: flex; }
+            .bl-nav-links {
+                position: fixed;
+                top: 68px; left: 0; right: 0;
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0;
+                background: var(--navy);
+                max-height: 0;
+                overflow: hidden;
+                opacity: 0;
+                padding: 0 1.25rem;
+                box-shadow: 0 12px 24px rgba(0,0,0,.28);
+                transition: max-height .3s ease, opacity .25s ease, padding .3s ease;
+            }
+            .bl-nav-links.open {
+                max-height: 320px;
+                opacity: 1;
+                padding: .5rem 1.25rem 1.25rem;
+            }
+            .bl-nav-links li { width: 100%; }
+            .bl-nav-links a {
+                display: block; padding: .85rem 0; width: 100%;
+                border-bottom: 1px solid rgba(255,255,255,.08);
+            }
+            .bl-nav-links li:last-child a { border-bottom: none; }
+            .bl-nav-right { gap: .5rem; }
+            .bl-notif { display: none; }
+        }
+
         .page-header { padding: 40px 0 10px; animation: fadeDown .5s ease both; }
         .page-title { font-family: 'Playfair Display', serif; font-size: clamp(1.8rem, 4vw, 2.6rem); font-weight: 900; color: var(--navy); margin: 0; }
 
-        /* ─── Search Box ─── */
         .search-wrap { position: relative; max-width: 380px; width: 100%; }
         .search-wrap input { background: var(--sand); border: none; border-radius: 50px; padding: 10px 48px 10px 22px; font-size: .93rem; color: #333; width: 100%; }
         .search-wrap input:focus { outline: none; box-shadow: 0 0 0 3px rgba(26,31,53,.2); }
         .search-wrap .search-btn { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); background: none; border: none; font-size: 1.2rem; color: #555; }
 
-        /* ─── Stat Cards ─── */
         .stat-section { padding: 24px 0; }
         .stat-card {
             background: #fff;
@@ -98,10 +182,8 @@
         .stat-number { font-family: 'Playfair Display', serif; font-size: 3.2rem; font-weight: 900; line-height: 1; color: var(--navy); display: block; }
         .stat-label { font-size: .88rem; color: #666; margin-top: 6px; font-weight: 500; text-transform: uppercase; letter-spacing: .03em; }
 
-        /* ─── Divider ─── */
         .section-divider { height: 2px; background: linear-gradient(90deg, var(--accent) 0%, transparent 100%); border-radius: 2px; margin: 8px 0 28px; opacity: .6; }
 
-        /* ─── Book Cards ─── */
         .books-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; padding-bottom: 60px; }
         .book-card { background: #fff; border-radius: 16px; overflow: hidden; box-shadow: 0 2px 12px rgba(0,0,0,.07); transition: transform .25s, box-shadow .25s; cursor: pointer; }
         .book-card:hover { transform: translateY(-5px); box-shadow: 0 14px 36px rgba(0,0,0,.13); }
@@ -118,7 +200,6 @@
         .btn-detail { background: rgba(255,255,255,.15); border: 1px solid rgba(255,255,255,.3); color: #fff; font-size: .78rem; font-weight: 600; padding: 5px 13px; border-radius: 20px; }
         .btn-detail:hover { background: rgba(255,255,255,.3); color: #fff; }
 
-        /* ─── Modal ─── */
         .modal-bookloop .modal-content { border: none; border-radius: 22px; overflow: hidden; box-shadow: 0 30px 80px rgba(0,0,0,.25); animation: modalPop .35s cubic-bezier(.34,1.56,.64,1) both; }
         .modal-header-custom { padding: 24px 24px 20px; display: flex; align-items: flex-start; gap: 18px; position: relative; }
         .modal-header-custom.status-waiting  { background: #f5f5c8; }
@@ -162,7 +243,6 @@
         .btn-action-trigger.btn-warning-custom { background: #F4C542; color: #333; }
         .btn-action-trigger.btn-warning-custom:hover { background: #dfb233; }
 
-        /* ─── STAR RATING ULASAN FORM ─── */
         .star-rating { display: flex; direction: row-reverse; justify-content: flex-end; gap: 4px; margin: .4rem 0 .8rem; }
         .star-rating input { display: none; }
         .star-rating label { font-size: 1.6rem; color: #DDD; cursor: pointer; }
@@ -196,21 +276,47 @@
 <body>
 
 {{-- NAVBAR --}}
-<nav class="navbar-bookloop d-flex align-items-center justify-content-between">
-    <a href="{{ url('/dashboard') }}" class="brand">
-        <span class="brand-icon">📚</span> BookLoop
-    </a>
-    <div class="nav-links d-flex gap-1 d-none d-md-flex">
-        <a href="{{ url('/dashboard') }}">home</a>
-        <a href="{{ route('catalog.index') }}">catalog</a>
-        <a href="{{ route('history.index') }}" class="active">history</a>
-    </div>
-    <div class="avatar-wrap">
-        <img src="https://ui-avatars.com/api/?name={{ urlencode(auth()->user()->NamaLengkap) }}&background=C8702A&color=fff" alt="User Avatar">
+<nav class="bl-navbar">
+    <a href="{{ url('/dashboard') }}" class="bl-logo">Book<span>Loop</span></a>
+
+    <ul class="bl-nav-links" id="blNavLinks">
+        <li><a href="{{ url('/dashboard') }}">Home</a></li>
+        <li><a href="{{ route('catalog.index') }}">Catalog</a></li>
+        <li><a href="{{ route('history.index') }}" class="active">History</a></li>
+    </ul>
+
+    <div class="bl-nav-right">
+        @auth
+            <div class="bl-notif" title="Notifications">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+                    <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+                </svg>
+                <div class="bl-notif-dot"></div>
+            </div>
+            <div class="dropdown">
+                <img src="https://ui-avatars.com/api/?name={{ urlencode(auth()->user()->NamaLengkap) }}&background=C8702A&color=fff"
+                     alt="Avatar" class="bl-avatar"
+                     data-bs-toggle="dropdown" aria-expanded="false" id="userMenu">
+                <ul class="dropdown-menu dropdown-menu-end shadow-sm" aria-labelledby="userMenu"
+                    style="border-radius:14px;border:1px solid rgba(0,0,0,.08);font-family:'DM Sans',sans-serif;min-width:180px;padding:.5rem;">
+                    <li><span class="dropdown-item-text small fw-bold text-muted">👋 {{ auth()->user()->NamaLengkap }}</span></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item rounded-2 py-2" href="{{ route('profile.show') }}">👤 &nbsp;My Profile</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item rounded-2 py-2 text-danger" href="{{ url('/logout') }}">🚪 &nbsp;Logout</a></li>
+                </ul>
+            </div>
+        @else
+            <a href="{{ route('login') }}" class="bl-signin-btn">Sign In</a>
+        @endauth
+        <button class="bl-nav-toggle" id="blNavToggle" type="button" aria-label="Toggle menu" aria-expanded="false">
+            <span></span>
+        </button>
     </div>
 </nav>
 
-<div class="container">
+<div class="container bl-page-offset">
 
     {{-- Page Header --}}
     <div class="page-header d-flex flex-wrap align-items-center justify-content-between gap-3">
@@ -221,7 +327,6 @@
         </div>
     </div>
 
-    {{-- 📊 LOGIKA HITUNG DATA DARI DATABASE ASLI --}}
     @php
         $totalAll      = $peminjaman->count();
         $totalReturned = $peminjaman->where('StatusPeminjaman', 'Proses Kembali')->count(); 
@@ -422,6 +527,25 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
+/* ===== NAVBAR MOBILE TOGGLE ===== */
+(function () {
+    const toggle = document.getElementById('blNavToggle');
+    const links  = document.getElementById('blNavLinks');
+    if (!toggle || !links) return;
+    toggle.addEventListener('click', function () {
+        const isOpen = links.classList.toggle('open');
+        toggle.classList.toggle('open', isOpen);
+        toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    });
+    links.querySelectorAll('a').forEach(function (a) {
+        a.addEventListener('click', function () {
+            links.classList.remove('open');
+            toggle.classList.remove('open');
+            toggle.setAttribute('aria-expanded', 'false');
+        });
+    });
+})();
+
 let activeBook = null;
 const modalEl = document.getElementById('detailModal');
 const bsModal  = new bootstrap.Modal(modalEl);
